@@ -1,11 +1,16 @@
+from socket import create_server
 import networkx as nx
 from networkx import dijkstra_path
+import scipy
+from scipy import sparse
+from scipy.sparse import csr_array
+import numpy
 import os
 from collections import OrderedDict
 import matplotlib.pyplot as plt
 
 # some code that does not need to be run every time
-# has been commented out to speed up the program
+# may be commented out to speed up the program
 
 # --------------------- Part 1 --------------------------
 folder = 'NetPath-pathways'
@@ -56,14 +61,14 @@ for edgeset in edges:
     counter +=1
 
 # reads from the whpin file and adds corresponding edges to the whpin graph
-whpin = nx.Graph()
+whpin = nx.DiGraph()
 if os.path.isfile('WHPIN.txt'):
     with open('WHPIN.txt') as text:
         lines = text.readlines()
         i = 1
         for i in range(len(lines)):
             edge = lines[i].split()
-            whpin.add_edge(edge[0], edge[1], weight=edge[2])
+            whpin.add_edge(edge[0], edge[1])
             
 # sanity check (all results are true so it has been commented out
 # to speed up the program)
@@ -153,6 +158,7 @@ plt.savefig("precision_recall_PathLinker.png")
 
 
 # ------------------------------ Part 4 -------------------------------------
+'''
 # collecting tfs and receptors
 tfs = [[], [], [], []]
 sources = [[], [], [], []]
@@ -172,7 +178,7 @@ for i in range(len(tfs)):
     for tf in tfs[i]:
         for source in sources[i]:
             try:
-                path = (dijkstra_path(graphlist[i], source, tf))
+                path = (dijkstra_path(whpin, source, tf))
                 for j in range(len(path) - 1):
                     paths[i].add_edge(path[j], path[j + 1])
             except:
@@ -196,6 +202,7 @@ for i in range(len(paths)):
     results[(i * 2) + 1].append(positives / p)
 
 # plot precision recall points for the shortest path algorithm
+
 plt.clf()
 plt.plot(results[1], results[0], label="EGFR1", marker="o", markersize=10)
 plt.plot(results[3], results[2], label="TGF_beta", marker="o", markersize=10)
@@ -206,3 +213,17 @@ plt.title("Evaluation of Reconstructed Pathways (Shortest Paths)")
 plt.xlabel("Recall")
 plt.ylabel("Precision")
 plt.savefig("precision_recall_ShortestPaths.png")
+'''
+
+# ------------------------------ Part 5 -------------------------------------
+# implementing RWR
+matrix = nx.to_numpy_array(whpin)
+
+dmatrix = numpy.tril(matrix)
+dmatrix = numpy.triu(dmatrix)
+
+# unfortunately I was not able to get the below line to work
+# so I was not able to complete the RWR graph
+# whenever I tried to take the inverse of the diagonalized
+# matrix it outputted it as a singular matrix
+# numpy.transpose(numpy.matmul(numpy.inv(dmatrix), matrix))
