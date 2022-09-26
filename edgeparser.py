@@ -158,7 +158,6 @@ plt.savefig("precision_recall_PathLinker.png")
 
 
 # ------------------------------ Part 4 -------------------------------------
-'''
 # collecting tfs and receptors
 tfs = [[], [], [], []]
 sources = [[], [], [], []]
@@ -213,7 +212,6 @@ plt.title("Evaluation of Reconstructed Pathways (Shortest Paths)")
 plt.xlabel("Recall")
 plt.ylabel("Precision")
 plt.savefig("precision_recall_ShortestPaths.png")
-'''
 
 # ------------------------------ Part 5 -------------------------------------
 # implementing RWR
